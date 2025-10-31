@@ -1,1 +1,1 @@
-# KT-CS-projecct-backend
+# KT-CS-project-backend
