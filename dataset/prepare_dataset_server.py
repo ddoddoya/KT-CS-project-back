@@ -2,7 +2,7 @@ import os, json, random, shutil
 from tqdm import tqdm
 
 # ======== 기본 경로 ========
-BASE_DIR = "/home/elicer/dataset/031.다양한_형태의_한글_문자_이미지_인식_데이터/01.데이터"
+BASE_DIR = "/home/elicer/dataset/data/"
 TRAIN_DIR = os.path.join(BASE_DIR, "1.Training")
 VAL_DIR = os.path.join(BASE_DIR, "2.Validation")
 
@@ -23,9 +23,9 @@ VAL_RATIO = 0.1  # 검증 데이터 비율
 # ======== 라벨 경로 설정 함수 ========
 def label_dirs(base):
     return {
-        "print": os.path.join(base, "라벨링데이터", "1.인쇄체"),
-        "hand_char": os.path.join(base, "라벨링데이터", "2.필기체", "1.글자"),
-        "hand_word": os.path.join(base, "라벨링데이터", "2.필기체", "2.단어"),
+        "print": os.path.join(base, "Label", "1.Printed"),
+        "hand_char": os.path.join(base, "Label", "2.Handwritten", "1.Character"),
+        "hand_word": os.path.join(base, "Label", "2.Handwritten", "2.Word"),
     }
 
 TRAIN_LABELS = label_dirs(TRAIN_DIR)
@@ -51,7 +51,7 @@ def extract_texts(json_path):
         return []
 
 def convert_det_item(json_path):
-    img_path = json_path.replace("라벨링데이터", "원천데이터").replace(".json", ".jpg")
+    img_path = json_path.replace("Label", "Character").replace(".json", ".jpg")
     with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     anns = []
@@ -63,7 +63,7 @@ def convert_det_item(json_path):
 # ======== 균형 샘플링 ========
 
 def sample_balanced():
-    print("🎯 균형 샘플링 진행 중...")
+    print(" 균형 샘플링 진행 중...")
     selected = []
     for k, v in SAMPLES.items():
         label_dirs_combined = [TRAIN_LABELS[k], VAL_LABELS[k]]
@@ -85,35 +85,35 @@ def create_det_json(file_list, out_path):
         det_data.append(convert_det_item(js))
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(det_data, f, ensure_ascii=False, indent=2)
-    print(f"✅ {out_path} 저장 완료 ({len(det_data)}개)")
+    print(f" {out_path} 저장 완료 ({len(det_data)}개)")
 
 def create_rec_txt(file_list, out_path):
     with open(out_path, "w", encoding="utf-8") as f:
         for js in tqdm(file_list, desc=f"REC 생성 ({os.path.basename(out_path)})"):
-            img_path = js.replace("라벨링데이터", "원천데이터").replace(".json", ".jpg")
+            img_path = js.replace("Label", "Character").replace(".json", ".jpg")
             texts = extract_texts(js)
             if texts:
                 f.write(f"{img_path}\t{' '.join(texts)}\n")
-    print(f"✅ {out_path} 저장 완료 ({len(file_list)}개 기준)")
+    print(f" {out_path} 저장 완료 ({len(file_list)}개 기준)")
 
 # ======== 이미지 복사 ========
 
 def copy_images(file_list, output_dir):
     copied = 0
     for js in tqdm(file_list, desc="📸 이미지 복사 중"):
-        img_path = js.replace("라벨링데이터", "원천데이터").replace(".json", ".jpg")
+        img_path = js.replace("Label", "Character").replace(".json", ".jpg")
         if os.path.exists(img_path):
             fname = os.path.basename(img_path)
             dst = os.path.join(output_dir, fname)
             shutil.copy2(img_path, dst)
             copied += 1
-    print(f"✅ 이미지 {copied:,}장 복사 완료 → {output_dir}")
+    print(f" 이미지 {copied:,}장 복사 완료 → {output_dir}")
 
 # ======== 메인 실행 ========
 
 if __name__ == "__main__":
     train_files, val_files = sample_balanced()
-    print(f"📊 학습: {len(train_files)}개 / 검증: {len(val_files)}개")
+    print(f" 학습: {len(train_files)}개 / 검증: {len(val_files)}개")
 
     create_det_json(train_files, os.path.join(OUT_DIR, "train_det.json"))
     create_det_json(val_files, os.path.join(OUT_DIR, "val_det.json"))
@@ -122,4 +122,4 @@ if __name__ == "__main__":
 
     copy_images(train_files + val_files, IMG_OUT_DIR)
 
-    print("🎉 DET + REC + 이미지 복사까지 완료!")
+    print(" DET + REC + 이미지 복사까지 완료!")
