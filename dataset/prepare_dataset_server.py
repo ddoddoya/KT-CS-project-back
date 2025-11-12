@@ -14,9 +14,9 @@ os.makedirs(IMG_OUT_DIR, exist_ok=True)
 
 # ======== 샘플 비율 ========
 SAMPLES = {
-    "print": 20000,     # 인쇄체
-    "hand_char": 7000,  # 필기체 - 글자
-    "hand_word": 3000   # 필기체 - 단어
+    "print": 30000,     # 인쇄체
+    "hand_char": 10000,  # 필기체 - 글자
+    "hand_word": 4000   # 필기체 - 단어
 }
 VAL_RATIO = 0.1  # 검증 데이터 비율
 
