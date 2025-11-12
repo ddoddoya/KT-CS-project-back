@@ -1,0 +1,25 @@
+Global:
+  use_gpu: true
+  epoch_num: 200
+  save_model_dir: ../models/det_model/
+  save_epoch_step: 5
+  print_batch_step: 10
+  save_log_path: ../training/logs/det_log/
+  character_dict_path: ../dataset/labels/charset.txt
+  max_text_length: 50
+  infer_img: ../dataset/images/
+  pretrained_model: null
+
+Train:
+  dataset:
+    name: SimpleDataSet
+    data_dir: ../dataset/images/
+    label_file_list:
+      - ../dataset/train_det.json
+
+Eval:
+  dataset:
+    name: SimpleDataSet
+    data_dir: ../dataset/images/
+    label_file_list:
+      - ../dataset/val_det.json
