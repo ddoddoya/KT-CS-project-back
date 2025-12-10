@@ -1,0 +1,36 @@
+# ----- 기본 Python -----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+
+# --- ML 대용량 데이터 / 모델 ---
+dataset/
+pretrain/
+training/logs/
+models/
+PaddleOCR/
+ch_PP-OCRv4_rec_server/
+
+# --- 빌드/캐시/의존성 ---
+node_modules/
+
+
+# 모델/체크포인트 대용량 파일 패턴
+*.tar
+*.pdparams
+*.pth
+*.pt
+*.onnx
+
+# ----- 가상환경 -----
+.venv/
+venv/
+env/
+
+# ----- 기타 -----
+.DS_Store
+.idea/
+.vscode/
+node_modules
